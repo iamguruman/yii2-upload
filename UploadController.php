@@ -37,6 +37,7 @@ class UploadController extends Controller
     {
         $searchModel = new MKpUploadsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->setSort(['defaultOrder' => ['id' => SORT_DESC]]);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -65,9 +66,19 @@ class UploadController extends Controller
     public function actionCreate()
     {
         $model = new MKpUploads();
+        
+        if($bill = Bill::findOne(aGet('bill'))) {
+            $model->bill_id = $bill->id;
+        }
+        
+        $model->created_by = aUserMyId();
+        $model->created_at = aDateNow();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                aReturnto();
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('create', [
@@ -85,9 +96,15 @@ class UploadController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        
+        $model->updated_by = aUserMyId();
+        $model->updated_at = aDateNow();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                aReturnto();
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [
