@@ -2,18 +2,22 @@
 
 namespace app\modules\kp\controllers;
 
+use app\modules\bills\models\BillUpload;
+use app\modules\kp\models\Kp;
 use Yii;
 use app\modules\kp\models\MKpUploads;
 use app\modules\kp\models\MKpUploadsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * UploadController implements the CRUD actions for MKpUploads model.
  */
 class UploadController extends Controller
 {
+
     /**
      * {@inheritdoc}
      */
@@ -38,6 +42,7 @@ class UploadController extends Controller
         $searchModel = new MKpUploadsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->setSort(['defaultOrder' => ['id' => SORT_DESC]]);
+
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -66,17 +71,59 @@ class UploadController extends Controller
     public function actionCreate()
     {
         $model = new MKpUploads();
-        
-        if($bill = Bill::findOne(aGet('bill'))) {
-            $model->bill_id = $bill->id;
-        }
-        
-        $model->created_by = aUserMyId();
+
         $model->created_at = aDateNow();
+        $model->created_by = aUserMyId();
+
+        if($kp = Kp::findOne(aGet('kp'))){
+            $model->kp_id = $kp->id;
+        }
+
+        $model->files = UploadedFile::getInstances($model, 'files');
+
+        $directory = Yii::getAlias('@webroot/_uploads') . DIRECTORY_SEPARATOR;
 
         if ($model->load(Yii::$app->request->post())) {
+
+            foreach ($model->uploads as $uploadedFile){
+
+                $md5 = md5_file($uploadedFile->tempName);
+
+                $fileName = $md5 . '.' . $uploadedFile->extension;
+
+                $filePath = $directory . $fileName;
+
+                if(!file_exists($filePath)){
+                    $uploadedFile->saveAs($filePath);
+                }
+
+                if(BillUpload::find()->andWhere(['md5' => $md5, 'kp_id' => $kp->id])->count() == 0){
+
+                    $uploadModel = new MKpUploads();  // поменять название модели
+                    $uploadModel->kp_id = $kp->id;
+
+
+                    $uploadModel->team_id = aTeamDefaultId();
+                    $uploadModel->created_at = aDateNow();
+                    $uploadModel->created_by = aUserMyId();
+                    $uploadModel->md5 = $md5;
+                    $uploadModel->filename_original = $uploadedFile->name;
+                    $uploadModel->ext = $uploadedFile->extension;
+                    $uploadModel->mimetype = $uploadedFile->type;
+                    $uploadModel->size = $uploadedFile->size;
+
+                    // добавить свои проверки для массовых расстановок галочек
+                    //if($model->type_ustavnoi_doc){
+                    //    $uploadModel->type_ustavnoi_doc = $model->type_ustavnoi_doc;
+                    //}
+
+                    if($uploadModel->save()){ } else { ddd($uploadModel->errors); }
+
+                }
+
+            }
+
             if ($model->save()) {
-                aReturnto();
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         }
@@ -96,15 +143,9 @@ class UploadController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        
-        $model->updated_by = aUserMyId();
-        $model->updated_at = aDateNow();
 
-        if ($model->load(Yii::$app->request->post())) {
-            if ($model->save()) {
-                aReturnto();
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
