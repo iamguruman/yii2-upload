@@ -7,13 +7,17 @@ use app\modules\kp\models\Kp;
 use Yii;
 use app\modules\kp\models\MKpUploads;
 use app\modules\kp\models\MKpUploadsSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 
 /**
- * UploadController implements the CRUD actions for MKpUploads model.
+ * UploadController implements the CRUD actions
+ *
+ * контроллер для загрузки файлов в проект
+ *
  */
 class UploadController extends Controller
 {
@@ -28,6 +32,15 @@ class UploadController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@']
+                    ],
                 ],
             ],
         ];
@@ -79,13 +92,16 @@ class UploadController extends Controller
             $model->kp_id = $kp->id;
         }
 
-        $model->files = UploadedFile::getInstances($model, 'files');
-
         $directory = Yii::getAlias('@webroot/_uploads') . DIRECTORY_SEPARATOR;
 
         if ($model->load(Yii::$app->request->post())) {
 
-            foreach ($model->uploads as $uploadedFile){
+            $model->files = UploadedFile::getInstances($model, 'files');
+
+            // перебираю каждый файл из загруженных
+            // в данном случае вариант загрузки нескольких файлов
+            // иногда бывают случаи когда нельзя несколько файлов грузить сразу
+            foreach ($model->files as $uploadedFile){
 
                 $md5 = md5_file($uploadedFile->tempName);
 
@@ -97,11 +113,10 @@ class UploadController extends Controller
                     $uploadedFile->saveAs($filePath);
                 }
 
-                if(BillUpload::find()->andWhere(['md5' => $md5, 'kp_id' => $kp->id])->count() == 0){
+                if(MKpUploads::find()->andWhere(['md5' => $md5, 'kp_id' => $kp->id])->count() == 0){
 
                     $uploadModel = new MKpUploads();  // поменять название модели
                     $uploadModel->kp_id = $kp->id;
-
 
                     $uploadModel->team_id = aTeamDefaultId();
                     $uploadModel->created_at = aDateNow();
@@ -123,9 +138,10 @@ class UploadController extends Controller
 
             }
 
-            if ($model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
+            aReturnto();
+            //if ($model->save()) {
+            //    return $this->redirect(['view', 'id' => $model->id]);
+            //}
         }
 
         return $this->render('create', [
