@@ -7,7 +7,7 @@ use yii\data\ActiveDataProvider;
 use app\modules\kp\models\MKpUploads;
 
 /**
- * xxxxUploadSearch represents the model behind the search form of `xxxUpload`.
+ * M----UploadSearch represents the model behind the search form of `M----Upload`.
  */
 class xxxxUploadSearch extends xxxxUploads
 {
