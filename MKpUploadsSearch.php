@@ -7,9 +7,9 @@ use yii\data\ActiveDataProvider;
 use app\modules\kp\models\MKpUploads;
 
 /**
- * MKpUploadsSearch represents the model behind the search form of `app\modules\kp\models\MKpUploads`.
+ * xxxxUploadSearch represents the model behind the search form of `xxxUpload`.
  */
-class MKpUploadsSearch extends MKpUploads
+class xxxxUploadSearch extends xxxxUploads
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,20 @@ class MKpUploadsSearch extends MKpUploads
     public function rules()
     {
         return [
-            [['id', 'kp_id', 'team_id', 'created_at', 'created_by', 'updated_at', 'updated_by', 'markdel_by', 'size', 'type_anketa'], 'integer'],
-            [['markdel_at', 'filename_original', 'md5', 'ext', 'mimetype'], 'safe'],
+            [['id', 'team_id'], 'integer'],
+
+            [['created_at', 'updated_at', 'markdel_at'], 'integer'],
+            [['created_by', 'updated_by', 'markdel_by'], 'integer'],
+
+            [['size'], 'integer'],
+
+            [['filename_original', 'md5', 'ext', 'mimetype'], 'string'],
+
+            [['review_id'], 'integer'],
+
+            [['type_screenshot'], 'integer', 'max' => 1],
+            [['type_goods_photo'], 'integer', 'max' => 1],
+            [['type_customer_photo'], 'integer', 'max' => 1],
         ];
     }
 
@@ -35,6 +47,7 @@ class MKpUploadsSearch extends MKpUploads
      * Creates data provider instance with search query applied
      *
      * @param array $params
+     * @param array $params2[] - параметры, которые используются для поиска внутри метода сирч
      *
      * @return ActiveDataProvider
      */
@@ -76,6 +89,7 @@ class MKpUploadsSearch extends MKpUploads
             ->andFilterWhere(['like', 'ext', $this->ext])
             ->andFilterWhere(['like', 'mimetype', $this->mimetype]);
 
+        // пример как испольщуется поиск в методе сирч
         if(!empty($params2['kp_id'])){
             $query->andWhere(['kp_id' => $params2['kp_id']]);
         }
