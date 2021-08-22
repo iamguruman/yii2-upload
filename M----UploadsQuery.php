@@ -1,13 +1,14 @@
 <?php
 
-namespace app\modules\kp\models;
+
+namespace app\modules\customer_review\models;
 
 /**
- * This is the ActiveQuery class for [[MKpUploads]].
+ * This is the ActiveQuery class for [[M----Uploads]].
  *
- * @see MKpUploads
+ * @see MReviewUpload
  */
-class MKpUploadsQuery extends \yii\db\ActiveQuery
+class MReviewUploadQuery extends \yii\db\ActiveQuery
 {
     /*public function active()
     {
@@ -19,13 +20,13 @@ class MKpUploadsQuery extends \yii\db\ActiveQuery
         parent::init();
 
         if(aIfHideMarkdel()){
-            $this->andWhere(['m_kp__uploads.markdel_by' => null]);
+            $this->andWhere(['m_review__uploads.markdel_by' => null]);
         }
     }
 
     /**
      * {@inheritdoc}
-     * @return MKpUploads[]|array
+     * @return MReviewUploadQuery[]|array
      */
     public function all($db = null)
     {
@@ -34,7 +35,7 @@ class MKpUploadsQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return MKpUploads|array|null
+     * @return MReviewUploadQuery|array|null
      */
     public function one($db = null)
     {
