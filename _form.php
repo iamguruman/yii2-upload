@@ -12,17 +12,29 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= (aIfModuleControllerAction("kp", "upload", "view") &&
+    <?= (aIfModuleControllerAction("customer_review", "upload", "view") &&
             aUserMyId() == 1) ? $form->field($model, 'kp_id')->textInput() : null ?>
 
-    <?= (aIfModuleControllerAction("kp", "upload", "view") &&
+    <?= (aIfModuleControllerAction("customer_review", "upload", "view") &&
         aUserMyId() == 1) ? $form->field($model, 'filename_original')->textInput(['maxlength' => true]) : null ?>
 
-    <?= aIfModuleControllerAction("kp", "upload", "create") ?
+    <?= aIfModuleControllerAction("customer_review", "upload", "create") ?
         $form->field($model, 'files[]')
             ->fileInput(['multiple' => true])
         //->fileInput(['multiple' => true])
         : null ?>
+
+    <?= aIfModuleControllerAction("customer_review", "upload", "update") ?
+        $form->field($model, 'type_screenshot')->checkbox()
+    : null ?>
+
+    <?= aIfModuleControllerAction("customer_review", "upload", "update") ?
+        $form->field($model, 'type_goods_photo')->checkbox()
+    : null ?>
+
+    <?= aIfModuleControllerAction("customer_review", "upload", "update") ?
+        $form->field($model, 'type_customer_photo')->checkbox()
+    : null ?>
 
 
     <div class="form-group">
