@@ -1,15 +1,15 @@
 <?php
 
-namespace app\modules\kp\models;
+
+namespace app\modules\customer_review\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\kp\models\MKpUploads;
 
 /**
- * M----UploadSearch represents the model behind the search form of `M----Upload`.
+ * xxxxSearch represents the model behind the search form of `xxxxUploads`.
  */
-class xxxxUploadSearch extends xxxxUploads
+class MReviewUploadSearch extends MReviewUpload
 {
     /**
      * {@inheritdoc}
@@ -17,7 +17,9 @@ class xxxxUploadSearch extends xxxxUploads
     public function rules()
     {
         return [
-            [['id', 'team_id'], 'integer'],
+            [['id'], 'integer'],
+            [['team_by'], 'integer'],
+            [['object_id'], 'integer'],
 
             [['created_at', 'updated_at', 'markdel_at'], 'integer'],
             [['created_by', 'updated_by', 'markdel_by'], 'integer'],
@@ -25,8 +27,6 @@ class xxxxUploadSearch extends xxxxUploads
             [['size'], 'integer'],
 
             [['filename_original', 'md5', 'ext', 'mimetype'], 'string'],
-
-            [['review_id'], 'integer'],
 
             [['type_screenshot'], 'integer', 'max' => 1],
             [['type_goods_photo'], 'integer', 'max' => 1],
@@ -47,13 +47,13 @@ class xxxxUploadSearch extends xxxxUploads
      * Creates data provider instance with search query applied
      *
      * @param array $params
-     * @param array $params2[] - параметры, которые используются для поиска внутри метода сирч
+     * @param array $params2[]
      *
      * @return ActiveDataProvider
      */
     public function search($params, $params2 = [])
     {
-        $query = MKpUploads::find();
+        $query = MReviewUpload::find();
 
         // add conditions that should always apply here
 
@@ -72,8 +72,8 @@ class xxxxUploadSearch extends xxxxUploads
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'kp_id' => $this->kp_id,
-            'team_id' => $this->team_id,
+            'object_id' => $this->object_id,
+            'team_by' => $this->team_by,
             'created_at' => $this->created_at,
             'created_by' => $this->created_by,
             'updated_at' => $this->updated_at,
@@ -81,7 +81,6 @@ class xxxxUploadSearch extends xxxxUploads
             'markdel_by' => $this->markdel_by,
             'markdel_at' => $this->markdel_at,
             'size' => $this->size,
-            'type_anketa' => $this->type_anketa,
         ]);
 
         $query->andFilterWhere(['like', 'filename_original', $this->filename_original])
@@ -89,11 +88,58 @@ class xxxxUploadSearch extends xxxxUploads
             ->andFilterWhere(['like', 'ext', $this->ext])
             ->andFilterWhere(['like', 'mimetype', $this->mimetype]);
 
-        // пример как испольщуется поиск в методе сирч
-        if(!empty($params2['kp_id'])){
-            $query->andWhere(['kp_id' => $params2['kp_id']]);
+        if(!empty($this->type_screenshot)){
+            if($this->type_screenshot == "1"){
+
+                $query->andWhere(['type_screenshot' => 1]);
+
+            } elseif($this->type_screenshot == "0"){
+
+                $query->andWhere(['or',
+                    ['is', 'type_screenshot', null],
+                    ['type_screenshot' => 0]
+                ]);
+
+            }
+        }
+
+        if(!empty($this->type_goods_photo)){
+            if($this->type_goods_photo == "1"){
+
+                $query->andWhere(['type_goods_photo' => 1]);
+
+            } elseif($this->type_goods_photo == "0"){
+
+                $query->andWhere(['or',
+                    ['is', 'type_goods_photo', null],
+                    ['type_goods_photo' => 0]
+                ]);
+
+            }
+        }
+
+        if(!empty($this->type_customer_photo)){
+            if($this->type_customer_photo == "1"){
+
+                $query->andWhere(['type_customer_photo' => 1]);
+
+            } elseif($this->type_customer_photo == "0"){
+
+                $query->andWhere(['or',
+                    ['is', 'type_customer_photo', null],
+                    ['type_customer_photo' => 0]
+                ]);
+
+            }
+        }
+
+        // пример использования параметра $params2
+        // находим основной объект, к которому привязан файл
+        if(!empty($params2['object_id'])){
+            $query->andWhere(['object_id' => $params2['object_id']]);
         }
 
         return $dataProvider;
     }
+
 }
