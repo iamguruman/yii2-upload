@@ -3,17 +3,17 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\kp\models\MKpUploads */
+/* @var $model \app\modules\customer_review\models\MReviewUpload */
 
 $this->title = 'Добавить файл';
 
 $this->params['breadcrumbs'][] = ['label' => 'Коммерческие предложения', 'url' => ['/kp']];
 
-if($model->kp){
-    $this->params['breadcrumbs'][] = $model->kp->getBreadcrumbs();
+if($model->object){
+    $this->params['breadcrumbs'][] = $model->object->getBreadcrumbs();
 
     $this->params['breadcrumbs'][] = ['label' => 'Файлы',
-        'url' => ['/kp/kp/view', 'id' => $model->kp->id, 'tab' => 'files']];
+        'url' => ['/customer_review/default/view', 'id' => $model->object->id, 'tab' => 'files']];
 }
 
 
