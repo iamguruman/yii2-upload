@@ -10,13 +10,14 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use app\modules\customer_review\models\MReviewUpload;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\kp\models\MKpUploadsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 
-if(aIfModuleControllerAction('kp', 'upload', 'index')){
+if(aIfModuleControllerAction('customer_review', 'upload', 'index')){
     $this->title = 'Файлы';
     $this->params['breadcrumbs'][] = \app\modules\kp\Module::getBreadcrumbs();
     $this->params['breadcrumbs'][] = $this->title;
@@ -25,15 +26,15 @@ if(aIfModuleControllerAction('kp', 'upload', 'index')){
 ?>
 <div class="mkp-uploads-index">
 
-    <?= aIfModuleControllerAction('kp', 'upload', 'index') ?
+    <?= aIfModuleControllerAction('customer_review', 'upload', 'index') ?
             "<h1>".Html::encode($this->title)."</h1>"
     : null ?>
 
     <p>
-        <?= aIfModuleControllerAction('kp', 'kp', 'view') ?
+        <?= aIfModuleControllerAction('customer_review', 'default', 'view') ?
             Html::a('Добавить файл',
-                ['/kp/upload/create',
-                    'kp' => aGet('id'),
+                ['/customer_review/upload/create',
+                    'object' => aGet('id'),
                     'returnto' => urlencode($_SERVER['REQUEST_URI']."&tab=files")
                 ],
                 ['class' => 'btn btn-success'])
@@ -57,9 +58,9 @@ if(aIfModuleControllerAction('kp', 'upload', 'index')){
                 }
             ],
 
-            aIfModuleControllerAction("kp", "kp", "view") ? ['visible' => false] : [
-                'attribute' => 'kp_id',
-                'value' => 'kp.urlTo',
+            aIfModuleControllerAction("customer_review", "default", "view") ? ['visible' => false] : [
+                'attribute' => 'object_id',
+                'value' => 'object.urlTo',
                 'format' => 'raw',
             ],
 
@@ -67,16 +68,34 @@ if(aIfModuleControllerAction('kp', 'upload', 'index')){
 
             'mimetype',
 
+            [
+                'attribute' => 'type_screenshot',
+                'header' => 'Скрин',
+                'headerOptions' => ['style' => 'width:80px;']
+            ],
+
+            [
+                'attribute' => 'type_goods_photo',
+                'header' => 'Товар',
+                'headerOptions' => ['style' => 'width:80px;']
+            ],
+
+            [
+                'attribute' => 'type_customer_photo',
+                'header' => 'Клиент',
+                'headerOptions' => ['style' => 'width:80px;']
+            ],
+
             ['class' => 'yii\grid\ActionColumn', 'template' => '{download} {view}', 'buttons' => [
 
-                    'download' => function($url, \app\modules\kp\models\MKpUploads $model, $key){
+                    'download' => function($url, MReviewUpload $model, $key){
                     return Html::a("<i class='fas fa-download'></i>",
                         ["/_uploads/{$model->md5}.{$model->ext}"],
                         ['data-pjax' => 0, 'target' => '_blank']);
                 },
 
-                'view' => function($url, \app\modules\kp\models\MKpUploads $model, $key){
-                    return Html::a("<i class='fas fa-eye'></i>", ['/kp/upload/view', 'id' => $model->id], ['data-pjax' => 0]);
+                'view' => function($url, MReviewUpload $model, $key){
+                    return Html::a("<i class='fas fa-eye'></i>", ['/customer_review/upload/view', 'id' => $model->id], ['data-pjax' => 0]);
                 },
 
             ]],
