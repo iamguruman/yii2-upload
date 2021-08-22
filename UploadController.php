@@ -1,12 +1,12 @@
 <?php
 
-namespace app\modules\kp\controllers;
+namespace app\modules\customer_review\controllers;
 
 use app\modules\bills\models\BillUpload;
-use app\modules\kp\models\Kp;
+use app\modules\customer_review\models\MReview;
+use app\modules\customer_review\models\MReviewUpload;
+use app\modules\customer_review\models\MReviewUploadSearch;
 use Yii;
-use app\modules\kp\models\MKpUploads;
-use app\modules\kp\models\MKpUploadsSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -47,12 +47,12 @@ class UploadController extends Controller
     }
 
     /**
-     * Lists all MKpUploads models.
+     * Lists all M----Uploads models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new MKpUploadsSearch();
+        $searchModel = new MReviewUploadSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->setSort(['defaultOrder' => ['id' => SORT_DESC]]);
 
@@ -64,7 +64,7 @@ class UploadController extends Controller
     }
 
     /**
-     * Displays a single MKpUploads model.
+     * Displays a single M----Uploads model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -77,19 +77,20 @@ class UploadController extends Controller
     }
 
     /**
-     * Creates a new MKpUploads model.
+     * Creates a new M----Uploads model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new MKpUploads();
+        $model = new MReviewUpload();
 
+        $model->team_by = aTeamDefaultId();
         $model->created_at = aDateNow();
         $model->created_by = aUserMyId();
 
-        if($kp = Kp::findOne(aGet('kp'))){
-            $model->kp_id = $kp->id;
+        if($object = MReview::findOne(aGet('object'))){
+            $model->object_id = $object->id;
         }
 
         $directory = Yii::getAlias('@webroot/_uploads') . DIRECTORY_SEPARATOR;
@@ -113,12 +114,12 @@ class UploadController extends Controller
                     $uploadedFile->saveAs($filePath);
                 }
 
-                if(MKpUploads::find()->andWhere(['md5' => $md5, 'kp_id' => $kp->id])->count() == 0){
+                if(MReviewUpload::find()->andWhere(['md5' => $md5, 'object_id' => $object->id])->count() == 0){
 
-                    $uploadModel = new MKpUploads();  // поменять название модели
-                    $uploadModel->kp_id = $kp->id;
+                    $uploadModel = new MReviewUpload();  // поменять название модели
+                    $uploadModel->object_id = $object->id;
 
-                    $uploadModel->team_id = aTeamDefaultId();
+                    $uploadModel->team_by = aTeamDefaultId();
                     $uploadModel->created_at = aDateNow();
                     $uploadModel->created_by = aUserMyId();
                     $uploadModel->md5 = $md5;
@@ -150,7 +151,7 @@ class UploadController extends Controller
     }
 
     /**
-     * Updates an existing MKpUploads model.
+     * Updates an existing M----Uploads model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -161,6 +162,8 @@ class UploadController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+            return $this->redirect(['/customer_review/default/view', 'id' => $model->object_id, 'tab' => 'files']);
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -170,7 +173,7 @@ class UploadController extends Controller
     }
 
     /**
-     * Deletes an existing MKpUploads model.
+     * Deletes an existing M----Uploads model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -181,23 +184,23 @@ class UploadController extends Controller
         $model = $this->findModel($id);
 
         return aControllerActionMarkdel($this, $model,
-            ['/kp/kp/view', 'id' => $model->kp_id, 'tab' => 'files'],
-            ['/kp/kp/view', 'id' => $model->kp_id, 'tab' => 'files']
+            ['/customer_review/default/view', 'id' => $model->object_id, 'tab' => 'files'],
+            ['/customer_review/default/view', 'id' => $model->object_id, 'tab' => 'files']
         );
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the MKpUploads model based on its primary key value.
+     * Finds the M----Uploads model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return MKpUploads the loaded model
+     * @return MReviewUpload the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = MKpUploads::findOne($id)) !== null) {
+        if (($model = MReviewUpload::findOne($id)) !== null) {
             return $model;
         }
 
