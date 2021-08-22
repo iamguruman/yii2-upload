@@ -1,7 +1,10 @@
 <?php
 
-namespace app\modules\kp\models;
 
+namespace app\modules\customer_review\models;
+
+
+use app\modules\teams\models\Team;
 use app\modules\users\models\User;
 use Yii;
 
@@ -31,51 +34,53 @@ use Yii;
  * @property int $isDeleted - удалить... пережиток прошлого
  *
  * @property string $filename_original Оригинальное название файла
- * @property string $md5 - мд5 хеш файла, чтобы проверять на дубликаты на диске не загружать дубликаты, 
- *                         если файл является дубликатом, то в контроллере в методе actionCreate файл не загружаем, 
+ * @property string $md5 - мд5 хеш файла, чтобы проверять на дубликаты на диске не загружать дубликаты,
+ *                         если файл является дубликатом, то в контроллере в методе actionCreate файл не загружаем,
  *                         но добавляем запись о том, что файл относится к объекту
  * @property string $ext Расширение файла
  * @property string $mimetype - миме тип файла
  * @property int $size - размер файла
  *
  * ПОЛЕ ИДЕНТИФИКАТОР ОБЪЕКТА, к котором цепляем файл:
- *                             
+ *
  * @property int $object_id
- * @property Kp $object
- * @property Kp $kp
+ * @property MReview $object
+ * @property MReview $review
  *
  *
  * СПИСОК ИНДИВИДУАЛЬНЫХ ПОЛЕЙ:
- * @property int $type_anketa Тип файла Анкета для нового покупателя
+ * @property int $type_screenshot - тип Скриншот отзыва
+ * @property int $type_goods_photo - тип Фото товара
+ * @property int $type_customer_photo - тип Фото покупателя
  *
  *
  * sql код:
- 
+
 DROP TABLE IF EXISTS `m_XX__uploads`;
 CREATE TABLE `m_XX__uploads` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `object_id` int(11) DEFAULT NULL COMMENT 'Объект, к которому крепится файл',
-  `team_by` int(11) DEFAULT NULL COMMENT 'Команда',
-  `created_at` datetime DEFAULT NULL COMMENT 'Добавлено когда',
-  `created_by` int(11) DEFAULT NULL COMMENT 'Добавлено кем',
-  `updated_at` datetime DEFAULT NULL COMMENT 'Изменено когда',
-  `updated_by` int(11) DEFAULT NULL COMMENT 'Изменено кем',
-  `markdel_by` int(11) DEFAULT NULL COMMENT 'Удалено кем',
-  `markdel_at` datetime DEFAULT NULL COMMENT 'Удалено когда',
-  `filename_original` varchar(255) DEFAULT NULL COMMENT 'Оригинальное название файла',
-  `md5` varchar(255) DEFAULT NULL,
-  `ext` varchar(255) DEFAULT NULL COMMENT 'Расширение файла',
-  `mimetype` varchar(255) DEFAULT NULL COMMENT 'Тип файла',
-  `size` int(11) DEFAULT NULL COMMENT 'Размер файла',
-  `type_anketa` int(11) DEFAULT NULL COMMENT 'Тип файла Анкета для нового покупателя',
-  PRIMARY KEY (`id`),
-  KEY `customer_id` (`kp_id`)
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`object_id` int(11) DEFAULT NULL COMMENT 'Объект, к которому крепится файл',
+`team_by` int(11) DEFAULT NULL COMMENT 'Команда',
+`created_at` datetime DEFAULT NULL COMMENT 'Добавлено когда',
+`created_by` int(11) DEFAULT NULL COMMENT 'Добавлено кем',
+`updated_at` datetime DEFAULT NULL COMMENT 'Изменено когда',
+`updated_by` int(11) DEFAULT NULL COMMENT 'Изменено кем',
+`markdel_by` int(11) DEFAULT NULL COMMENT 'Удалено кем',
+`markdel_at` datetime DEFAULT NULL COMMENT 'Удалено когда',
+`filename_original` varchar(255) DEFAULT NULL COMMENT 'Оригинальное название файла',
+`md5` varchar(255) DEFAULT NULL,
+`ext` varchar(255) DEFAULT NULL COMMENT 'Расширение файла',
+`mimetype` varchar(255) DEFAULT NULL COMMENT 'Тип файла',
+`size` int(11) DEFAULT NULL COMMENT 'Размер файла',
+`type_anketa` int(11) DEFAULT NULL COMMENT 'Тип файла Анкета для нового покупателя',
+PRIMARY KEY (`id`),
+KEY `customer_id` (`object_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
- 
+
  *
  *
  */
-class MKpUploads extends \yii\db\ActiveRecord
+class MReviewUpload extends \yii\db\ActiveRecord
 {
 
     public $files;
@@ -85,7 +90,7 @@ class MKpUploads extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'm_kp__uploads';
+        return 'm_review__uploads';
     }
 
     /**
@@ -96,8 +101,9 @@ class MKpUploads extends \yii\db\ActiveRecord
         return [
 
             // обязательные поля:
+            [['team_by'], 'integer'],
 
-            [['team_id'], 'integer'],
+            [['object_id'], 'integer'], // - главный объект к которому привязывается файл
 
             [['created_at', 'updated_at', 'markdel_at'], 'string'],
 
@@ -112,8 +118,9 @@ class MKpUploads extends \yii\db\ActiveRecord
             [['files'], 'safe'],
 
             // индивидуальные поля:
-            [['kp_id'], 'integer'], // - главный объект к которому привязывается файл
-            [['type_anketa'], 'integer', 'max' => 1], // дополнительное поле для типа файла АНКЕТА
+            [['type_screenshot'], 'integer', 'max' => 1], // дополнительное поле
+            [['type_goods_photo'], 'integer', 'max' => 1], // дополнительное поле
+            [['type_customer_photo'], 'integer', 'max' => 1], // дополнительное поле
 
         ];
     }
@@ -126,7 +133,7 @@ class MKpUploads extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
 
-            'team_id' => 'Team ID',
+            'team_by' => 'Команда',
 
             'created_at' => 'Добавлено когда',
             'created_by' => 'Добавлено кем',
@@ -145,26 +152,32 @@ class MKpUploads extends \yii\db\ActiveRecord
             'size' => 'Size',
 
             // дополнительные поля:
-            'kp_id' => 'Kp ID', // объект, к которому прицепятся файлы
-            'type_anketa' => 'Тип файла Анкета для нового покупателя',
+            'review_id' => 'Отзыв', // объект, к которому прицепятся файлы
+            'type_screenshot' => 'Тип Скриншот',
+            'type_goods_photo' => 'Тип Фото товара',
+            'type_customer_photo' => 'Тип Фото покупателя',
         ];
     }
 
     /**
      * {@inheritdoc}
-     * @return MKpUploadsQuery the active query used by this AR class.
+     * @return MReviewUploadQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new MKpUploadsQuery(get_called_class());
-    }
- 
-    public function getObject(){
-        return $this->hasOne(Kp::className(), ['id' => 'object_id']);
+        return new MReviewUploadQuery(get_called_class());
     }
 
-    public function getKp(){
-        return $this->getkp();
+    public function getReview(){
+        return $this->getObject();
+    }
+
+    public function getObject(){
+        return $this->hasOne(MReview::className(), ['id' => 'object_id']);
+    }
+
+    public function getTeamBy(){
+        return $this->hasOne(Team::className(), ['id' => 'team_by']);
     }
 
     public function getMarkdelBy(){
