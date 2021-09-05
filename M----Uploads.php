@@ -167,28 +167,36 @@ class MReviewUpload extends \yii\db\ActiveRecord
     {
         return new MReviewUploadQuery(get_called_class());
     }
+    
+    /**
+     * команда, которая работает с файлом
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTeamBy(){ return $this->hasOne(Team::className(), ['id' => 'team_by']); }
 
-    public function getReview(){
-        return $this->getObject();
-    }
+    /**
+     * кем файл удален
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMarkdelBy(){ return $this->hasOne(User::className(), ['id' => 'markdel_by']); }
 
+    /**
+     * кем добавлено файл
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy(){ return $this->hasOne(User::className(), ['id' => 'created_by']); }
+
+    /**
+     * кем изменен файл
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUpdatedBy(){ return $this->hasOne(User::className(), ['id' => 'updated_by']); }
+
+    /**
+     * получаем основной объект, к которому прикреплено сообщение
+     * @return \yii\db\ActiveQuery
+     */
     public function getObject(){
-        return $this->hasOne(MReview::className(), ['id' => 'object_id']);
-    }
-
-    public function getTeamBy(){
-        return $this->hasOne(Team::className(), ['id' => 'team_by']);
-    }
-
-    public function getMarkdelBy(){
-        return $this->hasOne(User::className(), ['id' => 'markdel_by']);
-    }
-
-    public function getCreatedBy(){
-        return $this->hasOne(User::className(), ['id' => 'created_by']);
-    }
-
-    public function getUpdatedBy(){
-        return $this->hasOne(User::className(), ['id' => 'updated_by']);
+        return $this->hasOne(MLetter::className(), ['id' => 'object_id']);
     }
 }
