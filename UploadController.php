@@ -21,9 +21,9 @@ use yii\web\UploadedFile;
  
  прототип таблицы:
  
- CREATE TABLE `m_<ИМЯ МОДУЛЯ>__upload` (
+CREATE TABLE `m_<NAME>__upload` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `bill_id` int(11) DEFAULT NULL,
+  `object_id` int(11) DEFAULT NULL,
   `team_id` int(11) DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `created_by` int(11) DEFAULT NULL,
@@ -31,15 +31,14 @@ use yii\web\UploadedFile;
   `updated_by` int(11) DEFAULT NULL,
   `markdel_at` datetime DEFAULT NULL COMMENT 'Удалено когда',
   `markdel_by` int(11) DEFAULT NULL COMMENT 'Удалено кем',
-  `isDeleted` int(11) NOT NULL DEFAULT '0',
   `filename_original` varchar(255) DEFAULT NULL COMMENT 'Оригинальное название файла',
   `md5` varchar(255) DEFAULT NULL,
   `ext` varchar(255) DEFAULT NULL COMMENT 'Расширение файла',
   `mimetype` varchar(255) DEFAULT NULL,
   `size` int(11) DEFAULT NULL,
-  `this_is_last_version_of_bill_document` int(1) DEFAULT NULL COMMENT 'Это последняя версия файла',
+  `type_this_is_last_version_of_bill_document` int(1) DEFAULT NULL COMMENT 'Это последняя версия файла',
   PRIMARY KEY (`id`),
-  KEY `bill_id` (`bill_id`)
+  KEY `bill_id` (`object_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
  
  */
