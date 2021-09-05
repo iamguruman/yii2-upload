@@ -36,9 +36,9 @@ CREATE TABLE `m_<NAME>__upload` (
   `ext` varchar(255) DEFAULT NULL COMMENT 'Расширение файла',
   `mimetype` varchar(255) DEFAULT NULL,
   `size` int(11) DEFAULT NULL,
-  `type_this_is_last_version_of_bill_document` int(1) DEFAULT NULL COMMENT 'Это последняя версия файла',
+  `type_this_is_last_version_of_document` int(1) DEFAULT NULL COMMENT 'Это последняя версия документа',
   PRIMARY KEY (`id`),
-  KEY `bill_id` (`object_id`)
+  KEY `object_id` (`object_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
  
  */
