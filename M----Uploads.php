@@ -132,6 +132,8 @@ class MReviewUpload extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            
+            'object_id' => 'Письмо',
 
             'team_by' => 'Команда',
 
@@ -148,8 +150,9 @@ class MReviewUpload extends \yii\db\ActiveRecord
             'filename_original' => 'Оригинальное название файла',
             'md5' => 'Md5',
             'ext' => 'Расширение файла',
-            'mimetype' => 'Mimetype',
-            'size' => 'Size',
+            
+            'mimetype' => 'Миме-тип файла',
+            'size' => 'Размер файла',
 
             // дополнительные поля:
             'review_id' => 'Отзыв', // объект, к которому прицепятся файлы
