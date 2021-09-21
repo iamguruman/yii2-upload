@@ -6,33 +6,36 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\modules\kp\models\MKpUploads */
 /* @var $form yii\widgets\ActiveForm */
+
+$module = "vacancy";
+
 ?>
 
 <div class="mkp-uploads-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= (aIfModuleControllerAction("customer_review", "upload", "view") &&
+    <?= (aIfModuleControllerAction($module, "upload", "view") &&
             aUserMyId() == 1) ? $form->field($model, 'kp_id')->textInput() : null ?>
 
-    <?= (aIfModuleControllerAction("customer_review", "upload", "view") &&
+    <?= (aIfModuleControllerAction($module, "upload", "view") &&
         aUserMyId() == 1) ? $form->field($model, 'filename_original')->textInput(['maxlength' => true]) : null ?>
 
-    <?= aIfModuleControllerAction("customer_review", "upload", "create") ?
+    <?= aIfModuleControllerAction($module, "upload", "create") ?
         $form->field($model, 'files[]')
             ->fileInput(['multiple' => true])
         //->fileInput(['multiple' => true])
         : null ?>
 
-    <?= aIfModuleControllerAction("customer_review", "upload", "update") ?
+    <?= aIfModuleControllerAction($module, "upload", "update") ?
         $form->field($model, 'type_screenshot')->checkbox()
     : null ?>
 
-    <?= aIfModuleControllerAction("customer_review", "upload", "update") ?
+    <?= aIfModuleControllerAction($module, "upload", "update") ?
         $form->field($model, 'type_goods_photo')->checkbox()
     : null ?>
 
-    <?= aIfModuleControllerAction("customer_review", "upload", "update") ?
+    <?= aIfModuleControllerAction($module, "upload", "update") ?
         $form->field($model, 'type_customer_photo')->checkbox()
     : null ?>
 
