@@ -17,28 +17,30 @@ use app\modules\customer_review\models\MReviewUpload;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 
-if(aIfModuleControllerAction('customer_review', 'upload', 'index')){
-    $this->title = 'Файлы';
-    $this->params['breadcrumbs'][] = \app\modules\kp\Module::getBreadcrumbs();
-    $this->params['breadcrumbs'][] = $this->title;
+$module = "vacancy";
+$controller = "default";
+$action = "index";
 
+if(aIfModuleControllerAction($module, $controller, $action)){
+    $this->params['breadcrumbs'][] = ['label' => 'Вакансии', 'url' => ["/{$module}/"]];
+    $this->title = 'Файлы';
+    $this->params['breadcrumbs'][] = $this->title;
 }
+
 ?>
 <div class="mkp-uploads-index">
 
-    <?= aIfModuleControllerAction('customer_review', 'upload', 'index') ?
-            "<h1>".Html::encode($this->title)."</h1>"
-    : null ?>
+    <?= aIfModuleControllerAction($module, $controller, $action) ?
+        aH1(Html::encode($this->title))
+    : null  ?>
 
     <p>
-        <?= aIfModuleControllerAction('customer_review', 'default', 'view') ?
-            Html::a('Добавить файл',
-                ['/customer_review/upload/create',
-                    'object' => aGet('id'),
-                    'returnto' => urlencode($_SERVER['REQUEST_URI']."&tab=files")
-                ],
-                ['class' => 'btn btn-success'])
-        : null ?>
+        <?= aIfModuleControllerAction($module, $controller, $action) ?
+            Html::a('Добавить', 
+                    ["/{$module}/{$controller}/create", 
+                     'returnto' => urlencode($_SERVER['REQUEST_URI']."&tab=files")], 
+                    ['class' => 'btn btn-success'])
+            : null  ?> 
     </p>
 
     <?php Pjax::begin(); ?>
