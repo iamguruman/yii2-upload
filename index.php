@@ -18,7 +18,7 @@ use app\modules\customer_review\models\MReviewUpload;
 
 
 $module = "vacancy";
-$controller = "default";
+$controller = "upload";
 $action = "index";
 
 if(aIfModuleControllerAction($module, $controller, $action)){
