@@ -74,7 +74,7 @@ CREATE TABLE `m_XX__uploads` (
 `size` int(11) DEFAULT NULL COMMENT 'Размер файла',
 `type_anketa` int(11) DEFAULT NULL COMMENT 'Тип файла Анкета для нового покупателя',
 PRIMARY KEY (`id`),
-KEY `customer_id` (`object_id`)
+KEY `object_id` (`object_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
  *
