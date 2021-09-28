@@ -6,6 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model \app\modules\customer_review\models\MReviewUpload */
 
+$module = 'route';
+$controller = 'route';
+
 $this->title = $model->filename_original;
 
 $this->params['breadcrumbs'][] = "Отзывы покупателей";
@@ -14,7 +17,7 @@ if($model->object){
     $this->params['breadcrumbs'][] = $model->object->getBreadcrumbs();
 
     $this->params['breadcrumbs'][] = ['label' => 'Файлы',
-        'url' => ['/customer_review/default/view', 'id' => $model->object->id, 'tab' => 'files']];
+        'url' => ["/{$module}/{$controller}/view", 'id' => $model->object->id, 'tab' => 'files']];
 }
 
 $this->params['breadcrumbs'][] = $this->title;
