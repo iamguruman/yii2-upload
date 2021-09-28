@@ -11,7 +11,7 @@ $controller = 'route';
 
 $this->title = $model->filename_original;
 
-$this->params['breadcrumbs'][] = "Отзывы покупателей";
+$this->params['breadcrumbs'][] = ['label' => 'Рейсы', 'url' => ["/{$module}/"]];
 
 if($model->object){
     $this->params['breadcrumbs'][] = $model->object->getBreadcrumbs();
