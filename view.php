@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= \yii\bootstrap\Tabs::widget(['items' => [
         [
             'label' => "ID",
-            'active' => "false",
+            'active' => false,
             'content' => "<br>".DetailView::widget([
                     'model' => $model,
                     'attributes' => [
