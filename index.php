@@ -41,6 +41,14 @@ if(aIfModuleControllerAction($module, $controller, $action)){
                      'returnto' => urlencode($_SERVER['REQUEST_URI']."&tab=files")], 
                     ['class' => 'btn btn-success'])
             : null  ?> 
+        
+        <?= aIfModuleControllerAction($module, 'route', 'view') ?
+            Html::a('Добавить',
+                ["/{$module}/{$controller}/create",
+                    'object' => aGet('id'),
+                    'returnto' => urlencode($_SERVER['REQUEST_URI']."&tab=files")],
+                ['class' => 'btn btn-success'])
+            : null  ?>
     </p>
 
     <?php Pjax::begin(); ?>
