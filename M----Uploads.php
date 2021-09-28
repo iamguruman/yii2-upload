@@ -56,8 +56,8 @@ use Yii;
  *
  * sql код:
 
-DROP TABLE IF EXISTS `m_XX__uploads`;
-CREATE TABLE `m_XX__uploads` (
+DROP TABLE IF EXISTS `m_XX__upload`;
+CREATE TABLE `m_XX__upload` (
 `id` int(11) NOT NULL AUTO_INCREMENT,
 `object_id` int(11) DEFAULT NULL COMMENT 'Объект, к которому крепится файл',
 `team_by` int(11) DEFAULT NULL COMMENT 'Команда',
