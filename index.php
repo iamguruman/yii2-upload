@@ -68,7 +68,7 @@ if(aIfModuleControllerAction($module, $controller, $action)){
                 }
             ],
 
-            aIfModuleControllerAction("customer_review", "default", "view") ? ['visible' => false] : [
+            aIfModuleControllerAction($module, "default", "view") ? ['visible' => false] : [
                 'attribute' => 'object_id',
                 'value' => 'object.urlTo',
                 'format' => 'raw',
