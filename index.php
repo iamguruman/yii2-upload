@@ -39,7 +39,7 @@ if(aIfModuleControllerAction($module, $controller, $action)){
             Html::a('Добавить', 
                     ["/{$module}/{$controller}/create",
                         'returnto' => urlencode($_SERVER['REQUEST_URI']."&tab=files"),
-                        'object_id' => aGet('id')
+                        'object' => aGet('id')
                     ],
                     ['class' => 'btn btn-success'])
             : null  ?> 
