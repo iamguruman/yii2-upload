@@ -108,6 +108,9 @@ class MReviewUpload extends \yii\db\ActiveRecord
             [['created_at', 'updated_at', 'markdel_at'], 'string'],
 
             [['created_by', 'updated_by', 'markdel_by'], 'integer'],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
+            [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['updated_by' => 'id']],
+            [['markdel_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['markdel_by' => 'id']],
 
             [['size'], 'integer'],
 
