@@ -8,7 +8,7 @@ use yii\helpers\Html;
 $module = 'route';
 $controller = 'route';
 
-$this->title = "Файл {$model->id}";
+$this->title = "Файл {$model->filename_original}";
 
 $this->params['breadcrumbs'][] = ['label' => 'Отзывы покупателей', 'url' => ['/customer_review/']];
 
