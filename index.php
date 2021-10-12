@@ -22,7 +22,7 @@ $controller = "upload";
 $action = "index";
 
 if(aIfModuleControllerAction($module, $controller, $action)){
-    $this->params['breadcrumbs'][] = ['label' => 'Вакансии', 'url' => ["/{$module}/"]];
+    $this->params['breadcrumbs'][] = app\modules\supplierrequest\Module::getBreadcrumbs();
     $this->title = 'Файлы';
     $this->params['breadcrumbs'][] = $this->title;
 }
