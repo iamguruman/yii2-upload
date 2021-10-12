@@ -18,29 +18,6 @@ use yii\web\UploadedFile;
  *
  * контроллер для загрузки файлов в проект
  *
- 
- прототип таблицы:
- 
-CREATE TABLE `m_<NAME>__upload` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `object_id` int(11) DEFAULT NULL,
-  `team_id` int(11) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL COMMENT 'Добавлено когда',
-  `created_by` int(11) DEFAULT NULL COMMENT 'Добавлено кем',
-  `updated_at` datetime DEFAULT NULL COMMENT 'Изменено когда',
-  `updated_by` int(11) DEFAULT NULL COMMENT 'Изменено кем',
-  `markdel_at` datetime DEFAULT NULL COMMENT 'Удалено когда',
-  `markdel_by` int(11) DEFAULT NULL COMMENT 'Удалено кем',
-  `filename_original` varchar(255) DEFAULT NULL COMMENT 'Оригинальное название файла',
-  `md5` varchar(255) DEFAULT NULL,
-  `ext` varchar(255) DEFAULT NULL COMMENT 'Расширение файла',
-  `mimetype` varchar(255) DEFAULT NULL,
-  `size` int(11) DEFAULT NULL,
-  `type_this_is_last_version_of_document` int(1) DEFAULT NULL COMMENT 'Это последняя версия документа',
-  PRIMARY KEY (`id`),
-  KEY `object_id` (`object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
- 
  */
 class UploadController extends Controller
 {
